@@ -30,8 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
           if (state is NewsLoadingState) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is NewsLoadedState) {
-            List<ArticleModal> articleList = [];
-            articleList = state.articleList;
+            List<ArticleModal> articleList = state.articleList;
             return ListView.builder(
               itemCount: articleList.length,
               itemBuilder: (BuildContext context, int index) {

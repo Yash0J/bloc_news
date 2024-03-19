@@ -8,20 +8,16 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ResponsiveSizer(
-      builder: (context, orientation, screenType) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => NewsBloc(
-              initialState: NewsInitState(),
-              newsRepository: NewsRepository(),
-            ),
-          ),
-        ],
+      builder: (context, orientation, screenType) => BlocProvider<NewsBloc>(
+        create: (context) => NewsBloc(
+          initialState: NewsInitState(),
+          newsRepository: NewsRepository(),
+        ),
         child: MaterialApp(
           title: 'News App',
           theme: ThemeData(
