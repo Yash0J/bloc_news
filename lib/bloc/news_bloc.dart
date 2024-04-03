@@ -1,50 +1,21 @@
 import 'package:bloc_news/bloc/news_states.dart';
 import 'package:bloc_news/bloc/news_events.dart';
-import 'package:bloc_news/modals/article_modal.dart';
 import 'package:bloc_news/repositories/news_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class NewsBloc extends Bloc<NewsEvents, NewsStates> {
-  NewsRepository newsRepository;
-  NewsBloc({
-    required NewsStates initialState,
-    required this.newsRepository,
-  }) : super(initialState) {
-    add(StartEvent()); // Add StartEvent on bloc creation
+  final NewsRepository newsRepository;
+  NewsBloc({required this.newsRepository}) : super(NewsInitState()) {
+    on<StartEvent>(_fetchNews);
   }
 
-  @override
-  Stream<NewsStates> mapEventToState(NewsEvents event) async* {
-    if (event is StartEvent) {
-      try {
-        List<ArticleModal> articleList = [];
-        yield NewsLoadingState();
-        articleList = await newsRepository.fetchNews();
-        yield NewsLoadedState(articleList: articleList);
-      } catch (_newsError) {
-        yield NewsErrorState(errorMEssage: _newsError.toString());
-      }
+  Future<void> _fetchNews(StartEvent event, Emitter<NewsStates> emit) async {
+    try {
+      emit(NewsLoadingState());
+      final articleList = await newsRepository.fetchNews();
+      emit(NewsLoadedState(articleList: articleList));
+    } catch (e) {
+      emit(NewsErrorState(errorMessage: e.toString()));
     }
   }
 }
-
-// class NewsBloc extends Bloc<NewsEvents, NewsStates> {
-//   final NewsRepository newsRepository;
-
-//   NewsBloc({
-//     required NewsStates initialState,
-//     required this.newsRepository,
-//   }) : super(initialState);
-
-//   Stream<NewsStates> mapEventToState(NewsEvents event) async* {
-//     if (event is StartEvent) {
-//       try {
-//         List<ArticleModal> articleList = await newsRepository.fetchNews();
-//         yield NewsLoadedState(articleList: articleList);
-//       } catch (error) {
-//         yield NewsErrorState(errorMEssage: error.toString());
-//       }
-//     }
-//   }
-// }
-
